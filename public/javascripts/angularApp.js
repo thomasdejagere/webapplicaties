@@ -1,5 +1,5 @@
 
-var app = angular.module('flapperNews', ['ui.router']);
+var app = angular.module('flapperNews', ['ui.router','ngAnimate']);
 
 app.config([
 	'$stateProvider',
@@ -235,4 +235,72 @@ app.controller('PostsCtrl', [
 			posts.upvoteComment(post, comment);
 		};
 	}]);
-		
+	
+	
+//SLIDER
+/*The important thing to note is that we have isolated the scope of our directive. 
+Since we will need several functions/properties only for the internal usage, 
+we’ve chosen to create an isolated scope instead of polluting the parent scope. 
+Also we should be able to accept a list of images from the parent scope for displaying. 
+That’s why we are using a = binding. 
+Finally, the template for the directive goes inside the templateurl.html file.*/
+
+app.directive('slider', function ($timeout) {
+	return {
+		restrict: 'AE',
+		replace: true,
+		scope: {
+			images: '='
+		},
+		link: function (scope, elem, attrs) {
+			scope.currentIndex = 0;
+			scope.next = function () {
+				scope.currentIndex < scope.images.length - 1 ? scope.currentIndex++ : scope.currentIndex = 0;
+			};
+			scope.previous = function () {
+				scope.currentIndex > 0 ? scope.currentIndex-- : scope.currentIndex = scope.images.length - 1;
+			};
+			//vanaf dat de currentindex wijzigt zet hij alle images hun visibility op false en de currentimage op true;
+			scope.$watch('currentIndex', function() {
+				scope.images.forEach(function(image) {
+					image.visible = false;
+				});
+				scope.images[scope.currentIndex].visible = true;
+			});
+			
+			var timer;
+			var sliderFunc = function(){
+				timer = $timeout(function(){
+					scope.next();
+					timer = $timeout(sliderFunc, 5000);
+				}, 5000);
+			};
+			
+			sliderFunc();
+			
+			scope.$on('$destroy', function(){
+				$timeout.cancel(timer); //when the scope is getting destroyed, cancel the timer;
+			});
+		},
+		templateUrl: 'templates/templateurl.html'
+	};
+});
+
+app.controller('SliderCtrl', function ($scope) {
+	$scope.images = [{
+		src: 'img1.png',
+		title: 'Pic 1'
+	}, {
+			src: 'img2.jpg',
+			title: 'Pic 2'
+		}, {
+			src: 'img3.jpg',
+			title: 'Pic 3'
+		}, {
+			src: 'img4.png',
+			title: 'Pic 4'
+		}, {
+			src: 'img5.png',
+			title: 'Pic 5'
+		}];
+})		
