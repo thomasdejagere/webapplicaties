@@ -7,12 +7,12 @@ var passport = require('passport');
 var User = mongoose.model('User');
 var jwt = require('express-jwt');
 //MOET DEZELFDE 'secret' ZIJN ALS BIJ DE MODELS/USERS.JS! Moet eigenlijk in een environment variable!
-var auth = jwt({sercret: 'SECRET', userProperty: 'payload'});
+var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
-})
+});
 
 router.get('/posts', function (req, res, next) {
   Post.find(function (err, posts) {
@@ -34,6 +34,7 @@ router.get('/posts/:post', function (req, res, next) {
   req.post.populate('comments', function(err, post) {
     if(err) { return next(err); }
     res.json(post);
+  });
 });
 
 router.param('post', function (req, res, next, id) {
