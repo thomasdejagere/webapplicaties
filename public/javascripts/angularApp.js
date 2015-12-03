@@ -1,5 +1,5 @@
 
-var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
+angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 
 	.config([
 		'$stateProvider',
@@ -52,7 +52,7 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 					}]
 				});
 
-			$urlRouterProvider.otherwise('home');
+			$urlRouterProvider.otherwise('login');
 		}])
 
 	.controller('NavCtrl', [
@@ -111,8 +111,6 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 		return auth;
 
 	}])
-
-
 
 	.controller('AuthCtrl', [
 		'$scope',
@@ -198,6 +196,7 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 		function ($scope, auth, posts) {
 			$scope.isLoggedIn = auth.isLoggedIn;
 			$scope.posts = posts.posts;
+
 			$scope.addPost = function () {
 				if (!$scope.title || $scope.title === '') { return; }
 				posts.create({
@@ -207,30 +206,27 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 				$scope.title = '';
 				$scope.link = '';
 			};
+
 			$scope.incrementUpvotes = function (post) {
 				posts.upvote(post);
-			}
-			$scope.incrementUpvotes = function (comment) {
-				comment.upvotes += 1
-			}
+			};
 		}])
 
 	.controller('PostsCtrl', [
 		'$scope',
-		'$stateParams',
-		'auth',
 		'posts',
-		function ($scope, auth, posts, post) {
-			$scope.isLoggedIn = auth.isLoggedIn;
+		'post',
+		'auth',
+		function ($scope, posts, post, auth) {
 			$scope.post = post;
+			$scope.isLoggedIn = auth.isLoggedIn;
 
 			$scope.addComment = function () {
 				if ($scope.body === '') { return; }
-				posts.addComment(post._id, {
+				$scope.post.comments.push({
 					body: $scope.body,
 					author: 'user',
-				}).success(function (comment) {
-					$scope.post.comments.push(comment);
+					upvotes: 0
 				});
 				$scope.body = '';
 			};
