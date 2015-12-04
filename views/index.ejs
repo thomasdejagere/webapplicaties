@@ -8,6 +8,7 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
   <script src="http://code.angularjs.org/1.2.9/angular-animate.min.js"></script>
   <script src="/javascripts/angularApp.js"></script>
+  <script type="text/javascript" src="/javascripts/angular-growl-notifications.js"></script>
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" rel="stylesheet">
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
 
@@ -29,13 +30,13 @@
     <md-toolbar>
       <md-fab-actions class="md-toolbar-tools">
         <md-button aria-label="User" class="md-icon-button" ng-show="isLoggedIn()">
-          <img src="img/icons/user.png" style="my-img-button" alt="User">
+          <a href="/#/home"><img src="img/icons/user.png" style="my-img-button" alt="User"></a>
         </md-button>
         <md-button aria-label="Log out" class="md-icon-button" ng-click="logOut()" ng-show="isLoggedIn()">
           <img src="img/icons/logout.png" style="my-img-button" alt="Log Out">
         </md-button>
         <md-button aria-label="Directives" class="md-icon-button" ng-show="isLoggedIn()">
-          <a href="/#/directive"><img src="img/icons/code.png" style="my-img-button" alt="Log Out"></a>
+          <a href="/#directive"><img src="img/icons/code.png" style="my-img-button" alt="Directive"></a>
         </md-button>
         <md-button aria-label="Log in" class="md-icon-button" ng-hide="isLoggedIn()">
           <a href="/#/login"><img src="img/icons/login.png" style="my-img-button" alt="Log In"></a>
@@ -47,6 +48,7 @@
     </md-toolbar>
     </md-fab-toolbar>
   </div>
+  
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
       <ui-view></ui-view>
@@ -58,7 +60,11 @@
   <div class="page-header">
     <h2>Home</h2>
   </div>
-  
+  <growl-notifications>
+  <growl-notification ttl="5000" ng-click="$growlNotification.remove()">
+  Er zijn nieuwe posts!
+  </growl-notification>
+  </growl-notifications>
   <div ng-repeat="post in posts | orderBy: '-upvotes'">
     <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(post)" /> {{post.upvotes}}
     <span style="font-size:20px; margin-left:10px;">
@@ -171,11 +177,15 @@
   <div class="page-header">
     <h1>Directives</h1>
   </div>
-  
-  <div ng-controller="DirectiveCtrl">
+ 
+  <div ng-hide="isLoggedIn()">
+    <h3>You need to <a href="/#/login">Log in</a> or <a href="/#/register">Register</a> before you can view the directives.<h3>
+  </div>
+  <div ng-show="isLoggedIn()">
     <h1>Slider Using AngularJS</h1>
     <slider images="images"/>
-  </div>
+  </div>  
+    
 </script>
 <script type="text/ng-template" id="/login.html">
   <div class="page-header">
@@ -211,7 +221,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
      <!-- Angular Material Javascript now available via Google CDN; version 0.11.2 used here -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.js"></script>
-
 </body>
 
 </html>

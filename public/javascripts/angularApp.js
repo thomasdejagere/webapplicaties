@@ -1,5 +1,5 @@
 
-angular.module('flapperNews', ['ui.router', 'ngAnimate', 'ngMaterial'])
+angular.module('flapperNews', ['ui.router', 'ngAnimate', 'ngMaterial','growlNotifications'])
 
 	.config([
 		'$stateProvider',
@@ -55,16 +55,12 @@ angular.module('flapperNews', ['ui.router', 'ngAnimate', 'ngMaterial'])
 					url: '/directive',
 					templateUrl: '/directive.html',
 					controller: 'DirectiveCtrl',
-					onEnter: ['$state', 'auth', function ($state, auth) {
-						if (auth.isLoggedIn()) {
-							$state.go('home');
-						}
-					}] 
+
 				});
 
 			$urlRouterProvider.otherwise('home');
 		}])
-		
+
 
 	.controller('NavCtrl', [
 		'$scope',
@@ -328,8 +324,12 @@ Finally, the template for the directive goes inside the templateurl.html file.*/
 		};
 	})
 
-	.controller('DirectiveCtrl', function ($scope) {
-		$scope.images = [{
+	.controller('DirectiveCtrl', [
+		'$scope',
+		'auth',
+		function ($scope, auth) {
+			$scope.isLoggedIn = auth.isLoggedIn;
+			$scope.images = [{
 			src: 'img1.png',
 			title: 'Pic 1'
 		}, {
@@ -345,12 +345,11 @@ Finally, the template for the directive goes inside the templateurl.html file.*/
 				src: 'img5.png',
 				title: 'Pic 5'
 			}];
-			
-			
-	})
+		}
+	])
 
 	.controller('BasicDemoCtrl', DemoCtrl);
-function DemoCtrl($timeout, $q) {
+	function DemoCtrl($timeout, $q) {
 	var self = this;
 	self.readonly = false;
 	// Lists of fruit names and Vegetable objects
