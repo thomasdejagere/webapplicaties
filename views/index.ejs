@@ -9,6 +9,8 @@
   <script src="http://code.angularjs.org/1.2.9/angular-animate.min.js"></script>
   <script src="/javascripts/angularApp.js"></script>
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
+
   <style>
     .glyphicon-thumbs-up {
       cursor: pointer
@@ -16,14 +18,35 @@
   </style>
 </head>
 <body ng-app="flapperNews">
-  <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
-    <ul class="nav navbar-nav">
-      <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
-      <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
-      <li ng-hide="isLoggedIn()"><a href="/#/login">Log In</a></li>
-      <li ng-hide="isLoggedIn()"><a href="/#/register">Register</a></li>
-    </ul>
-  </nav>
+  <div ng-controller="NavCtrl" ng-cloak>
+    <md-fab-toolbar md-open="demo.isOpen" count="demo.count"
+                  md-direction="{{demo.selectedDirection}}">
+    <md-fab-trigger class="align-with-text">
+      <md-button aria-label="menu" class="md-fab md-primary">
+        <img src="img/icons/menu.png" style="my-img-button" alt="Menu">
+      </md-button>
+    </md-fab-trigger>
+    <md-toolbar>
+      <md-fab-actions class="md-toolbar-tools">
+        <md-button aria-label="User" class="md-icon-button" ng-show="isLoggedIn()">
+          <img src="img/icons/user.png" style="my-img-button" alt="User">
+        </md-button>
+        <md-button aria-label="Log out" class="md-icon-button" ng-click="logOut()" ng-show="isLoggedIn()">
+          <img src="img/icons/logout.png" style="my-img-button" alt="Log Out">
+        </md-button>
+        <md-button aria-label="Directives" class="md-icon-button" ng-show="isLoggedIn()">
+          <a href="/#/directive"><img src="img/icons/code.png" style="my-img-button" alt="Log Out"></a>
+        </md-button>
+        <md-button aria-label="Log in" class="md-icon-button" ng-hide="isLoggedIn()">
+          <a href="/#/login"><img src="img/icons/login.png" style="my-img-button" alt="Log In"></a>
+        </md-button>
+        <md-button aria-label="Register" class="md-icon-button" ng-hide="isLoggedIn()">
+          <a href="/#/register"><img src="img/icons/register.png" style="my-img-button" alt="Register"></a>
+        </md-button>
+      </md-fab-actions>
+    </md-toolbar>
+    </md-fab-toolbar>
+  </div>
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
       <ui-view></ui-view>
@@ -33,6 +56,7 @@
 
   <script type="text/ng-template" id="/home.html">
   <div class="page-header">
+    <h2>Home</h2>
   </div>
   
   <div ng-repeat="post in posts | orderBy: '-upvotes'">
@@ -57,12 +81,29 @@
   <form ng-submit="addPost()" ng-show="isLoggedIn()" style="margin-top:30px;">
     <h3>Add a new post</h3>
     <div class="form-group">
-      <input type="text" class="form-control" placeholder="Title" ng-model="title"></input>
+      <md-input-container flex>
+          <label>Title</label>
+          <input ng-model="title">
+        </md-input-container>
     </div>
     <div class="form-group">
-      <input type="text" class="form-control" placeholder="Link" ng-model="link"></input>
+      <md-input-container flex>
+          <label>Link</label>
+          <input ng-model="link">
+        </md-input-container>
     </div>
-    <button type="submit" class="btn btn-primary">Post</button>
+    <div class="form-group">
+    <div ng-controller="BasicDemoCtrl as ctrl" layout="column" ng-cloak>
+    <md-chips
+        ng-model="ctrl.tags"
+        readonly="ctrl.readonly"
+        placeholder="Enter a tag"
+        delete-button-label="Remove Tag"
+        delete-hint="Press delete to remove tag"
+        secondary-placeholder="+Tag"></md-chips>
+    </div>
+    </div>
+    <md-button type="submit" class="md-raised md-primary">Post</md-button>
   </form>
 </script>
 <script type="text/ng-template" id="/posts.html">
@@ -90,9 +131,12 @@
     <h3>Add a new comment</h3>
 
     <div class="form-group">
-      <input type="text" class="form-control" placeholder="Comment" ng-model="body"></input>
+      <md-input-container flex>
+        <label>Comment</label>
+        <textarea ng-model="body" columns="1" md-maxlength="100" rows="5"></textarea>
+      </md-input-container flex>
     </div>
-    <button type="submit" class="btn btn-primary">Post</button>
+    <md-button type="submit" class="md-raised md-primary">Post</md-button>
   </form>
 </script>
 <script type="text/ng-template" id="/register.html">
@@ -109,19 +153,29 @@
     <h3>Register</h3>
 
     <div class="form-group">
-      <input type="text"
-      class="form-control"
-      placeholder="Username"
-      ng-model="user.username"></input>
+      <md-input-container flex>
+          <label>Username</label>
+          <input ng-model="user.username">
+       </md-input-container>
     </div>
     <div class="form-group">
-      <input type="password"
-      class="form-control"
-      placeholder="Password"
-      ng-model="user.password"></input>
+      <md-input-container flex>
+          <label>Password</label>
+          <input ng-model="user.password">
+      </md-input-container>
     </div>
-    <button type="submit" class="btn btn-primary">Register</button>
+    <md-button type="submit" class="md-raised md-primary">Register</md-button>
   </form>
+</script>
+<script type="text/ng-template" id="/directive.html">
+  <div class="page-header">
+    <h1>Directives</h1>
+  </div>
+  
+  <div ng-controller="DirectiveCtrl">
+    <h1>Slider Using AngularJS</h1>
+    <slider images="images"/>
+  </div>
 </script>
 <script type="text/ng-template" id="/login.html">
   <div class="page-header">
@@ -135,25 +189,29 @@
     <h3>Log In</h3>
 
     <div class="form-group">
-      <input type="text"
-      class="form-control"
-      placeholder="Username"
-      ng-model="user.username"></input>
+      <md-input-container flex>
+          <label>Username</label>
+          <input ng-model="user.username">
+       </md-input-container>
     </div>
     <div class="form-group">
-      <input type="password"
-      class="form-control"
-      placeholder="Password"
-      ng-model="user.password"></input>
+      <md-input-container flex type="password">
+          <label>Password</label>
+          <input ng-model="user.password">
+        </md-input-container>
     </div>
-    <button type="submit" class="btn btn-primary">Log In</button>
+    <md-button type="submit" class="md-raised md-primary">Log In</md-button>
   </form>
   
-  <div ng-controller="SliderCtrl">
-    <h1>Slider Using AngularJS</h1>
-    <slider images="images"/>
-  </div>
+  
   </script>
+    <!-- Angular Material Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+     <!-- Angular Material Javascript now available via Google CDN; version 0.11.2 used here -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.js"></script>
+
 </body>
 
 </html>
