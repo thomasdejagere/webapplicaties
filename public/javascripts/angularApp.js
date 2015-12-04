@@ -1,5 +1,5 @@
 
-angular.module('flapperNews', ['ui.router', 'ngAnimate', 'ngMaterial','growlNotifications'])
+angular.module('flapperNews', ['ui.router', 'ngAnimate', 'ngMaterial', 'growlNotifications'])
 
 	.config([
 		'$stateProvider',
@@ -330,26 +330,26 @@ Finally, the template for the directive goes inside the templateurl.html file.*/
 		function ($scope, auth) {
 			$scope.isLoggedIn = auth.isLoggedIn;
 			$scope.images = [{
-			src: 'img1.png',
-			title: 'Pic 1'
-		}, {
-				src: 'img2.png',
-				title: 'Pic 2'
+				src: 'img1.png',
+				title: 'Pic 1'
 			}, {
-				src: 'img3.png',
-				title: 'Pic 3'
-			}, {
-				src: 'img4.png',
-				title: 'Pic 4'
-			}, {
-				src: 'img5.png',
-				title: 'Pic 5'
-			}];
+					src: 'img2.png',
+					title: 'Pic 2'
+				}, {
+					src: 'img3.png',
+					title: 'Pic 3'
+				}, {
+					src: 'img4.png',
+					title: 'Pic 4'
+				}, {
+					src: 'img5.png',
+					title: 'Pic 5'
+				}];
 		}
 	])
 
 	.controller('BasicDemoCtrl', DemoCtrl);
-	function DemoCtrl($timeout, $q) {
+function DemoCtrl($timeout, $q) {
 	var self = this;
 	self.readonly = false;
 	// Lists of fruit names and Vegetable objects

@@ -1,24 +1,24 @@
-(function(){
+(function () {
 
-    // Config
-    angular.module('growlNotifications.config', [])
-        .value('growlNotifications.config', {
-            debug: true
-        });
+  // Config
+  angular.module('growlNotifications.config', [])
+    .value('growlNotifications.config', {
+      debug: true
+    });
 
-    // Modules
-    angular.module('growlNotifications.directives', []);
-    angular.module('growlNotifications.filters', []);
-    angular.module('growlNotifications.services', []);
-    angular.module('growlNotifications',
-        [
-            'growlNotifications.config',
-            'growlNotifications.directives',
-            'growlNotifications.filters',
-            'growlNotifications.services'
-        ]);
+  // Modules
+  angular.module('growlNotifications.directives', []);
+  angular.module('growlNotifications.filters', []);
+  angular.module('growlNotifications.services', []);
+  angular.module('growlNotifications',
+    [
+      'growlNotifications.config',
+      'growlNotifications.directives',
+      'growlNotifications.filters',
+      'growlNotifications.services'
+    ]);
 
-})();(function () {
+})(); (function () {
 
   function growlNotificationDirective(growlNotifications, $animate, $timeout) {
 
@@ -79,7 +79,7 @@
           $animate.leave(iElem);
 
           // Run onClose handler if there is one
-          if(iAttrs.onClose){
+          if (iAttrs.onClose) {
             scope.$eval(iAttrs.onClose);
           }
         }, options.ttl);
@@ -120,7 +120,7 @@
         this.timer.cancel();
 
         // Run onClose handler if there is one
-        if($attrs.onClose){
+        if ($attrs.onClose) {
           $scope.$eval($attrs.onClose);
         }
       }
@@ -176,12 +176,12 @@
     .module('growlNotifications.directives')
     .directive('growlNotifications', growlNotificationsDirective);
 
-})();(function () {
+})(); (function () {
 
   /**
    * Growl notifications provider
    */
-  function growlNotificationsProvider(){
+  function growlNotificationsProvider() {
 
     // Default options
     var options = {
