@@ -22,7 +22,7 @@ UserSchema.methods.validPassword = function (password) {
 UserSchema.methods.generateJWT = function () {
 	var today = new Date();
 	var exp = new Date(today);
-	exp.setData(today.getDate() + 60);
+	exp.setDate(today.getDate() + 60);
 
 	return jwt.sign({
 		_id: this._id,

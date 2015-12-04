@@ -1,5 +1,5 @@
 
-var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
+angular.module('flapperNews', ['ui.router', 'ngAnimate', 'ngMaterial','growlNotifications'])
 
 	.config([
 		'$stateProvider',
@@ -50,10 +50,17 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 							$state.go('home');
 						}
 					}]
+				})
+				.state('directive', {
+					url: '/directive',
+					templateUrl: '/directive.html',
+					controller: 'DirectiveCtrl',
+
 				});
 
 			$urlRouterProvider.otherwise('home');
 		}])
+
 
 	.controller('NavCtrl', [
 		'$scope',
@@ -62,6 +69,21 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 			$scope.isLoggedIn = auth.isLoggedIn;
 			$scope.currentUser = auth.currentUser;
 			$scope.logOut = auth.logOut;
+
+			$scope.isOpen = false;
+      $scope.demo = {
+        isOpen: false,
+        count: 5,
+        selectedDirection: 'left',
+				showTooltip: false,
+				tipDirection: ''
+      };
+
+			$scope.$watch('demo.tipDirection', function (val) {
+				if (val && val.length) {
+					$scope.demo.showTooltip = true;
+				}
+			})
 		}])
 
 	.factory('auth', ['$http', '$window', function ($http, $window) {
@@ -111,8 +133,6 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 		return auth;
 
 	}])
-
-
 
 	.controller('AuthCtrl', [
 		'$scope',
@@ -198,6 +218,7 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 		function ($scope, auth, posts) {
 			$scope.isLoggedIn = auth.isLoggedIn;
 			$scope.posts = posts.posts;
+
 			$scope.addPost = function () {
 				if (!$scope.title || $scope.title === '') { return; }
 				posts.create({
@@ -207,24 +228,37 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 				$scope.title = '';
 				$scope.link = '';
 			};
+			$scope.body = '';
+			//alertdialog
+			
 			$scope.incrementUpvotes = function (post) {
 				posts.upvote(post);
-			}
-			$scope.incrementUpvotes = function (comment) {
-				comment.upvotes += 1
-			}
+			};
 		}])
 
 	.controller('PostsCtrl', [
 		'$scope',
-		'$stateParams',
-		'auth',
 		'posts',
-		function ($scope, auth, posts, post) {
-			$scope.isLoggedIn = auth.isLoggedIn;
+		'post',
+		'auth',
+		function ($scope, posts, post, auth) {
 			$scope.post = post;
+			$scope.isLoggedIn = auth.isLoggedIn;
 
 			$scope.addComment = function () {
+				if ($scope.body === '') { return; }
+				posts.addComment(post._id, {
+					body: $scope.body,
+					author: 'user',
+				});
+				$scope.post.comments.push({
+					body: $scope.body,
+					author: 'user',
+					upvotes: 0
+				});
+			};
+
+			/*$scope.addComment = function () {
 				if ($scope.body === '') { return; }
 				posts.addComment(post._id, {
 					body: $scope.body,
@@ -233,7 +267,7 @@ var app = angular.module('flapperNews', ['ui.router', 'ngAnimate'])
 					$scope.post.comments.push(comment);
 				});
 				$scope.body = '';
-			};
+			};*/
 
 			$scope.incrementUpvotes = function (comment) {
 				posts.upvoteComment(post, comment);
@@ -290,8 +324,12 @@ Finally, the template for the directive goes inside the templateurl.html file.*/
 		};
 	})
 
-	.controller('SliderCtrl', function ($scope) {
-		$scope.images = [{
+	.controller('DirectiveCtrl', [
+		'$scope',
+		'auth',
+		function ($scope, auth) {
+			$scope.isLoggedIn = auth.isLoggedIn;
+			$scope.images = [{
 			src: 'img1.png',
 			title: 'Pic 1'
 		}, {
@@ -307,4 +345,35 @@ Finally, the template for the directive goes inside the templateurl.html file.*/
 				src: 'img5.png',
 				title: 'Pic 5'
 			}];
-	});		
+		}
+	])
+
+	.controller('BasicDemoCtrl', DemoCtrl);
+	function DemoCtrl($timeout, $q) {
+	var self = this;
+	self.readonly = false;
+	// Lists of fruit names and Vegetable objects
+	self.fruitNames = ['Apple', 'Banana', 'Orange'];
+	self.roFruitNames = angular.copy(self.fruitNames);
+	self.tags = [];
+	self.vegObjs = [
+		{
+			'name': 'Broccoli',
+			'type': 'Brassica'
+		},
+		{
+			'name': 'Cabbage',
+			'type': 'Brassica'
+		},
+		{
+			'name': 'Carrot',
+			'type': 'Umbelliferous'
+		}
+	];
+	self.newVeg = function (chip) {
+		return {
+			name: chip,
+			type: 'unknown'
+		};
+	};
+};
